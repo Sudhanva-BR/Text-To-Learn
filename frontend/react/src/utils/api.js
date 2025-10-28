@@ -9,6 +9,20 @@ const api = axios.create({
   },
 });
 
+// Add auth token to requests
+api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('auth_token');
+    if (token) {
+      config.headers.Authorization = `Token ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
 // API methods
 export const courseAPI = {
   // Get all courses

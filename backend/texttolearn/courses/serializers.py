@@ -18,19 +18,32 @@ class ModuleSerializer(serializers.ModelSerializer):
 
 class CourseSerializer(serializers.ModelSerializer):
     modules = ModuleSerializer(many=True, read_only=True)
+    creator_name = serializers.SerializerMethodField()
     
     class Meta:
         model = Course
-        fields = ['id', 'title', 'description', 'creator', 'tags', 'modules', 'created_at', 'updated_at']
+        fields = ['id', 'title', 'description', 'creator', 'creator_name', 'tags', 'modules', 'created_at', 'updated_at']
+        read_only_fields = ['creator_name']
+    
+    def get_creator_name(self, obj):
+        if obj.creator:
+            return obj.creator.username
+        return 'Anonymous'
 
 
 class CourseListSerializer(serializers.ModelSerializer):
     """Lightweight serializer for course listing without nested data"""
     module_count = serializers.SerializerMethodField()
+    creator_name = serializers.SerializerMethodField()
     
     class Meta:
         model = Course
-        fields = ['id', 'title', 'description', 'tags', 'module_count', 'created_at']
+        fields = ['id', 'title', 'description', 'tags', 'module_count', 'creator_name', 'created_at']
     
     def get_module_count(self, obj):
         return obj.modules.count()
+    
+    def get_creator_name(self, obj):
+        if obj.creator:
+            return obj.creator.username
+        return 'Anonymous'

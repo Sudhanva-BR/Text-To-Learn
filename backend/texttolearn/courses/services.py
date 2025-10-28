@@ -66,15 +66,47 @@ Return ONLY valid JSON (no markdown formatting, no code blocks):
         if not api_key or not self.model:
             raise Exception("Gemini API key not configured. Please set GEMINI_API_KEY in your .env file.")
         
-        prompt = f"""Create lesson content for "{lesson_title}"
+        prompt = f"""Create detailed educational content for "{lesson_title}" in the course "{course_title}" under module "{module_title}".
+
+The content should be comprehensive and engaging. Include:
+- Clear headings for each section
+- Detailed explanations
+- Examples and practical insights
+- Lists where helpful
+- Code examples if relevant
+
+Also, add at least ONE video suggestion block using this format:
+{{"type": "video", "query": "relevant search term for YouTube"}}
+
+And add at least ONE quiz section using this format:
+{{"type": "quiz", "questions": [
+  {{
+    "question": "What is the main concept?",
+    "options": ["Option A", "Option B", "Option C", "Option D"],
+    "correct": 0,
+    "explanation": "Explanation of why this is correct"
+  }}
+]}}
 
 Return ONLY valid JSON (no markdown formatting, no code blocks):
 {{
   "title": "{lesson_title}",
-  "objectives": ["obj1", "obj2"],
+  "objectives": ["Learning objective 1", "Learning objective 2", "Learning objective 3"],
   "content": [
-    {{"type": "heading", "text": "Title"}},
-    {{"type": "paragraph", "text": "Content"}}
+    {{"type": "heading", "text": "Introduction"}},
+    {{"type": "paragraph", "text": "Detailed content explaining the topic..."}},
+    {{"type": "list", "items": ["Point 1", "Point 2", "Point 3"]}},
+    {{"type": "video", "query": "relevant YouTube search term"}},
+    {{"type": "heading", "text": "Key Concepts"}},
+    {{"type": "paragraph", "text": "More detailed content..."}},
+    {{"type": "quiz", "questions": [
+      {{
+        "question": "What is the main concept?",
+        "options": ["Option A", "Option B", "Option C", "Option D"],
+        "correct": 0,
+        "explanation": "Explanation of why this is correct"
+      }}
+    ]}}
   ]
 }}"""
         
@@ -88,18 +120,34 @@ Return ONLY valid JSON (no markdown formatting, no code blocks):
     
     def _parse_json_response(self, text):
         print(f"Parsing JSON response (length: {len(text)})")
+        
+        # Remove markdown code blocks
         cleaned = re.sub(r'```json\s*', '', text)
         cleaned = re.sub(r'```\s*', '', cleaned).strip()
+        
+        # Try to find JSON object in the text
+        json_match = re.search(r'\{.*\}', cleaned, re.DOTALL)
+        if json_match:
+            cleaned = json_match.group()
+        
         try:
             parsed = json.loads(cleaned)
             print(f"Successfully parsed JSON")
             return parsed
         except Exception as e:
             print(f"JSON parsing error: {str(e)}")
-            print(f"Cleaned text: {cleaned[:200]}...")
-            match = re.search(r'\{.*\}', cleaned, re.DOTALL)
-            if match:
-                return json.loads(match.group())
-            raise Exception(f"Invalid JSON: {str(e)}")
+            print(f"Cleaned text: {cleaned[:500]}...")
+            
+            # Try to fix common JSON issues
+            try:
+                # Fix trailing commas
+                cleaned = re.sub(r',\s*}', '}', cleaned)
+                cleaned = re.sub(r',\s*]', ']', cleaned)
+                parsed = json.loads(cleaned)
+                print(f"Successfully parsed JSON after fixing trailing commas")
+                return parsed
+            except Exception as e2:
+                print(f"Still failed after fixing: {str(e2)}")
+                raise Exception(f"Invalid JSON: {str(e)}")
 
 ai_service = AIService()

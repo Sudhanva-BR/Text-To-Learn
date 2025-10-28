@@ -20,7 +20,7 @@ const Home = () => {
           size="lg"
           onClick={() => navigate('/create')}
         >
-          Create Your First Course
+          Create Your own Course
         </Button>
       </VStack>
     </Box>

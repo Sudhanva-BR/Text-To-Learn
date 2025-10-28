@@ -1,11 +1,12 @@
 from django.db import models
 from django.contrib.postgres.fields import ArrayField
 from django.db.models import JSONField
+from django.contrib.auth.models import User
 
 class Course(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField(blank=True)
-    creator = models.CharField(max_length=255)  # Will store Auth0 'sub' later
+    creator = models.ForeignKey(User, on_delete=models.SET_NULL, related_name='courses', null=True, blank=True)
     tags = models.JSONField(default=list, blank=True)  # Store as JSON array
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

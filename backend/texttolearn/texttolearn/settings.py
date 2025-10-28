@@ -25,7 +25,7 @@ SECRET_KEY = "django-insecure-cfi-s90)vvasw8+*btldojezo@=7057v&f91i=u0qesxu%v5&p
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'testserver']
 
 
 # Application definition
@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",
+    "rest_framework.authtoken",
     'corsheaders',
     "courses",
 ]
@@ -80,10 +81,34 @@ CORS_ALLOWED_ORIGINS = [
 
 CORS_ALLOW_CREDENTIALS = True
 
+# Allow credentials to be sent
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+]
+
+# For development only - remove in production
+CORS_ALLOW_ALL_ORIGINS = True  # Temporarily allow all origins for development
+CORS_ALLOWED_ORIGIN_REGEXES = [
+    r"^http://localhost:\d+$",
+    r"^http://127\.0\.0\.1:\d+$",
+]
+
 # REST Framework settings
 REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ],
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.AllowAny',  # We'll change this later for Auth0
+        'rest_framework.permissions.AllowAny',
     ],
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 10,
@@ -147,6 +172,6 @@ SECRET_KEY = config('SECRET_KEY', default='django-insecure-change-this-in-produc
 DEBUG = config('DEBUG', default=True, cast=bool)
 
 # Add at the bottom
-GEMINI_API_KEY = config('GEMINI_API_KEY', default='AIzaSyCQ6bq7RMWeyiQbDdFcFRP84pMWx-naWR8')
-YOUTUBE_API_KEY = config('YOUTUBE_API_KEY', default='')
+GEMINI_API_KEY = config('GEMINI_API_KEY', default='AIzaSyCdVn6Ll77fKvj7nZ1R3tF9GB5HdXwYsdM')
+YOUTUBE_API_KEY = config('YOUTUBE_API_KEY', default='YOUR_NEW_YOUTUBE_API_KEY_HERE')
 OPENAI_API_KEY = config('OPENAI_API_KEY', default='')

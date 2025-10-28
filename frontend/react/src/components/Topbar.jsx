@@ -1,8 +1,17 @@
-import { Flex, Text, Button, Spacer, useColorMode, IconButton } from '@chakra-ui/react';
-import { FiSun, FiMoon, FiUser } from 'react-icons/fi';
+import { Flex, Text, Button, Spacer, useColorMode, IconButton, HStack } from '@chakra-ui/react';
+import { FiSun, FiMoon, FiLogOut } from 'react-icons/fi';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 const Topbar = () => {
   const { colorMode, toggleColorMode } = useColorMode();
+  const { isAuthenticated, user, logout } = useAuth();
+  const navigate = useNavigate();
+  
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
   
   return (
     <Flex
@@ -31,10 +40,23 @@ const Topbar = () => {
           aria-label="Toggle color mode"
         />
         
-        {/* Login button (placeholder for now) */}
-        <Button leftIcon={<FiUser />} colorScheme="blue" variant="outline">
-          Login
-        </Button>
+        {/* User info and logout button */}
+        {isAuthenticated && user && (
+          <HStack spacing={3}>
+            <Text fontSize="sm" color="gray.700" fontWeight="medium">
+              Welcome, {user.username}!
+            </Text>
+            <Button 
+              leftIcon={<FiLogOut />} 
+              colorScheme="blue" 
+              variant="outline"
+              onClick={handleLogout}
+              size="sm"
+            >
+              Logout
+            </Button>
+          </HStack>
+        )}
       </Flex>
     </Flex>
   );

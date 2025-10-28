@@ -7,7 +7,12 @@ from courses.views import (
     LessonViewSet,
     generate_course,
     generate_lesson_content,
-    generate_full_course
+    generate_full_course,
+    register_user,
+    login_user,
+    logout_user,
+    youtube_search,
+    generate_hinglish_audio
 )
 
 router = DefaultRouter()
@@ -23,4 +28,13 @@ urlpatterns = [
     path('api/generate-course/', generate_course, name='generate-course'),
     path('api/generate-full-course/', generate_full_course, name='generate-full-course'),
     path('api/lessons/<int:lesson_id>/generate-content/', generate_lesson_content, name='generate-lesson-content'),
+    
+    # Authentication endpoints
+    path('api/register/', register_user, name='register'),
+    path('api/login/', login_user, name='login'),
+    path('api/logout/', logout_user, name='logout'),
+    
+    # YouTube and TTS endpoints
+    path('api/youtube/', youtube_search, name='youtube-search'),
+    path('api/lessons/<int:lesson_id>/hinglish-audio/', generate_hinglish_audio, name='hinglish-audio'),
 ]
