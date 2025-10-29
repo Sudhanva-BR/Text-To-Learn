@@ -158,5 +158,3 @@ const VideoBlock = ({ query }) => {
 };
 
 export default VideoBlock;
-
-

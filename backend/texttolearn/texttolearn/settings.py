@@ -172,6 +172,6 @@ SECRET_KEY = config('SECRET_KEY', default='django-insecure-change-this-in-produc
 DEBUG = config('DEBUG', default=True, cast=bool)
 
 # Add at the bottom
-GEMINI_API_KEY = config('GEMINI_API_KEY', default='AIzaSyCdVn6Ll77fKvj7nZ1R3tF9GB5HdXwYsdM')
+GEMINI_API_KEY = config('GEMINI_API_KEY', default='AIzaSyCQ6bq7RMWeyiQbDdFcFRP84pMWx-naWR8')
 YOUTUBE_API_KEY = config('YOUTUBE_API_KEY', default='YOUR_NEW_YOUTUBE_API_KEY_HERE')
 OPENAI_API_KEY = config('OPENAI_API_KEY', default='')

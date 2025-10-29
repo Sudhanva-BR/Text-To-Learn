@@ -13,9 +13,15 @@ import {
   Alert,
   AlertIcon,
   Flex,
+  Icon,
+  HStack,
 } from '@chakra-ui/react';
-import { FiUserPlus, FiMail } from 'react-icons/fi';
+import { FiUserPlus, FiMail, FiUser, FiLock, FiArrowLeft } from 'react-icons/fi';
+import { motion } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
+
+const MotionBox = motion(Box);
+const MotionButton = motion(Button);
 
 const Register = () => {
   const [username, setUsername] = useState('');
@@ -49,91 +55,281 @@ const Register = () => {
   };
 
   return (
-    <Container maxW="md" centerContent py={12}>
+    <Box
+      position="relative"
+      minH="100vh"
+      w="100vw"
+      overflow="hidden"
+      bgGradient="linear(to-br, #0f0c29, #302b63, #24243e)"
+      p={0}
+      m={0}
+    >
+      {/* Background Elements */}
       <Box
+        position="absolute"
+        top="10%"
+        left="10%"
+        w="400px"
+        h="400px"
+        bg="purple.500"
+        borderRadius="full"
+        filter="blur(120px)"
+        opacity={0.3}
+      />
+      <Box
+        position="absolute"
+        bottom="10%"
+        right="10%"
+        w="500px"
+        h="500px"
+        bg="pink.500"
+        borderRadius="full"
+        filter="blur(140px)"
+        opacity={0.2}
+      />
+      <Box
+        position="absolute"
+        top="50%"
+        left="30%"
+        w="300px"
+        h="300px"
+        bg="cyan.400"
+        borderRadius="full"
+        filter="blur(100px)"
+        opacity={0.15}
+      />
+
+      {/* Grid Pattern Overlay */}
+      <Box
+        position="absolute"
+        top="0"
+        left="0"
         w="100%"
-        p={8}
-        borderWidth={1}
-        borderRadius="lg"
-        boxShadow="lg"
-        bg="white"
-      >
-        <VStack spacing={6}>
-          <Flex align="center" gap={3}>
-            <FiUserPlus size={32} color="blue.600" />
-            <Heading size="xl" color="blue.600">
-              Register
-            </Heading>
-          </Flex>
+        h="100%"
+        backgroundImage="radial-gradient(circle at 1px 1px, rgba(255,255,255,0.15) 1px, transparent 0)"
+        backgroundSize="50px 50px"
+        opacity={0.1}
+      />
 
-          <Text color="gray.600" fontSize="md">
-            Create an account to get started
-          </Text>
+      <Container maxW="md" centerContent minH="100vh" display="flex" alignItems="center" justifyContent="center">
+        <MotionBox
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          w="100%"
+        >
+          <Box
+            bg="rgba(255, 255, 255, 0.05)"
+            backdropFilter="blur(20px)"
+            borderRadius="3xl"
+            p={10}
+            boxShadow="0 25px 50px -12px rgba(0, 0, 0, 0.5)"
+            border="1px solid rgba(255,255,255,0.15)"
+            position="relative"
+            overflow="hidden"
+          >
+            {/* Card Background Effect */}
+            <Box
+              position="absolute"
+              top={-100}
+              right={-100}
+              w="300px"
+              h="300px"
+              bgGradient="linear(to-br, #ff0080, #7928ca)"
+              borderRadius="full"
+              opacity={0.2}
+              filter="blur(80px)"
+            />
+            
+            <VStack spacing={8}>
+              {/* Header */}
+              <VStack spacing={4}>
+                <Flex align="center" gap={3}>
+                  <Box
+                    p={3}
+                    bgGradient="linear(to-r, #00c6ff, #0072ff)"
+                    borderRadius="xl"
+                    boxShadow="0 4px 15px rgba(0, 198, 255, 0.4)"
+                  >
+                    <Icon as={FiUserPlus} color="white" boxSize={8} />
+                  </Box>
+                  <Heading size="xl" bgGradient="linear(to-r, #00c6ff, #0072ff)" bgClip="text" fontWeight="bold">
+                    Join Us
+                  </Heading>
+                </Flex>
 
-          <Box as="form" w="100%" onSubmit={handleSubmit}>
-            <VStack spacing={4}>
-              {error && (
-                <Alert status="error">
-                  <AlertIcon />
-                  {error}
-                </Alert>
-              )}
+                <Text color="gray.300" fontSize="lg" textAlign="center">
+                  Create your account and start your learning journey
+                </Text>
+              </VStack>
 
-              <FormControl isRequired>
-                <FormLabel>Username</FormLabel>
-                <Input
-                  type="text"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  placeholder="Choose a username"
-                />
-              </FormControl>
+              {/* Form */}
+              <Box as="form" w="100%" onSubmit={handleSubmit}>
+                <VStack spacing={6}>
+                  {error && (
+                    <Alert status="error" borderRadius="xl" bg="red.500" color="white">
+                      <AlertIcon />
+                      {error}
+                    </Alert>
+                  )}
 
-              <FormControl>
-                <FormLabel>Email (Optional)</FormLabel>
-                <Input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Enter your email"
-                />
-              </FormControl>
+                  <FormControl isRequired>
+                    <FormLabel color="gray.200" fontWeight="medium">Username</FormLabel>
+                    <Input
+                      type="text"
+                      value={username}
+                      onChange={(e) => setUsername(e.target.value)}
+                      placeholder="Choose a username"
+                      bg="rgba(255,255,255,0.1)"
+                      border="1px solid rgba(255,255,255,0.2)"
+                      color="white"
+                      _placeholder={{ color: 'gray.400' }}
+                      _hover={{ borderColor: 'rgba(255,255,255,0.3)' }}
+                      _focus={{ 
+                        borderColor: '#00c6ff',
+                        boxShadow: '0 0 0 1px #00c6ff',
+                        bg: 'rgba(255,255,255,0.15)'
+                      }}
+                      size="lg"
+                      py={6}
+                      leftElement={<Icon as={FiUser} color="gray.400" ml={3} />}
+                    />
+                  </FormControl>
 
-              <FormControl isRequired>
-                <FormLabel>Password</FormLabel>
-                <Input
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Choose a password"
-                />
-              </FormControl>
+                  <FormControl>
+                    <FormLabel color="gray.200" fontWeight="medium">Email (Optional)</FormLabel>
+                    <Input
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="Enter your email"
+                      bg="rgba(255,255,255,0.1)"
+                      border="1px solid rgba(255,255,255,0.2)"
+                      color="white"
+                      _placeholder={{ color: 'gray.400' }}
+                      _hover={{ borderColor: 'rgba(255,255,255,0.3)' }}
+                      _focus={{ 
+                        borderColor: '#00c6ff',
+                        boxShadow: '0 0 0 1px #00c6ff',
+                        bg: 'rgba(255,255,255,0.15)'
+                      }}
+                      size="lg"
+                      py={6}
+                      leftElement={<Icon as={FiMail} color="gray.400" ml={3} />}
+                    />
+                  </FormControl>
 
-              <Button
-                type="submit"
-                colorScheme="blue"
-                width="full"
-                size="lg"
-                isLoading={loading}
-                loadingText="Creating account..."
-              >
-                Register
-              </Button>
+                  <FormControl isRequired>
+                    <FormLabel color="gray.200" fontWeight="medium">Password</FormLabel>
+                    <Input
+                      type="password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      placeholder="Choose a password"
+                      bg="rgba(255,255,255,0.1)"
+                      border="1px solid rgba(255,255,255,0.2)"
+                      color="white"
+                      _placeholder={{ color: 'gray.400' }}
+                      _hover={{ borderColor: 'rgba(255,255,255,0.3)' }}
+                      _focus={{ 
+                        borderColor: '#00c6ff',
+                        boxShadow: '0 0 0 1px #00c6ff',
+                        bg: 'rgba(255,255,255,0.15)'
+                      }}
+                      size="lg"
+                      py={6}
+                      leftElement={<Icon as={FiLock} color="gray.400" ml={3} />}
+                    />
+                  </FormControl>
+
+                  <MotionButton
+                    type="submit"
+                    bgGradient="linear(to-r, #00c6ff, #0072ff)"
+                    color="white"
+                    width="full"
+                    size="lg"
+                    isLoading={loading}
+                    loadingText="Creating account..."
+                    _hover={{
+                      bgGradient: "linear(to-r, #0072ff, #00c6ff)",
+                      transform: 'translateY(-2px)',
+                      boxShadow: '0 10px 25px rgba(0, 114, 255, 0.4)'
+                    }}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    fontWeight="bold"
+                    py={7}
+                    fontSize="lg"
+                  >
+                    Create Account
+                  </MotionButton>
+                </VStack>
+              </Box>
+
+              {/* Footer */}
+              <VStack spacing={4} w="100%">
+                <HStack spacing={1} color="gray.400">
+                  <Text fontSize="sm">Already have an account?</Text>
+                  <Link to="/login">
+                    <Button
+                      variant="link"
+                      color="#00c6ff"
+                      _hover={{ color: '#0072ff', textDecoration: 'none' }}
+                      fontSize="sm"
+                      fontWeight="bold"
+                      rightIcon={<FiArrowLeft />}
+                    >
+                      Sign in
+                    </Button>
+                  </Link>
+                </HStack>
+
+                {/* Features */}
+                <HStack spacing={6} pt={4} color="gray.400" fontSize="sm" flexWrap="wrap" justify="center">
+                  <HStack spacing={1}>
+                    <Icon as={FiUser} />
+                    <Text>Instant Access</Text>
+                  </HStack>
+                  <HStack spacing={1}>
+                    <Icon as={FiLock} />
+                    <Text>Secure</Text>
+                  </HStack>
+                  <HStack spacing={1}>
+                    <Icon as={FiMail} />
+                    <Text>Optional Email</Text>
+                  </HStack>
+                </HStack>
+              </VStack>
             </VStack>
           </Box>
+        </MotionBox>
+      </Container>
 
-          <Text fontSize="sm" color="gray.600">
-            Already have an account?{' '}
-            <Link to="/login" style={{ color: '#3182ce', fontWeight: 'bold' }}>
-              Login here
-            </Link>
-          </Text>
-        </VStack>
-      </Box>
-    </Container>
+      {/* Floating particles */}
+      {[...Array(8)].map((_, i) => (
+        <MotionBox
+          key={i}
+          position="absolute"
+          w="2px"
+          h="2px"
+          bg="white"
+          borderRadius="full"
+          opacity={0.6}
+          left={`${Math.random() * 100}%`}
+          top={`${Math.random() * 100}%`}
+          animate={{
+            y: [0, -30, 0],
+            opacity: [0.3, 0.8, 0.3],
+          }}
+          transition={{
+            duration: 3 + Math.random() * 2,
+            repeat: Infinity,
+            delay: Math.random() * 2,
+          }}
+        />
+      ))}
+    </Box>
   );
 };
 
 export default Register;
-
-

@@ -18,6 +18,7 @@ import {
   Badge,
   Flex,
   useToast,
+  useColorModeValue,
 } from '@chakra-ui/react';
 import { FiArrowLeft, FiBook, FiCheckCircle } from 'react-icons/fi';
 import { courseAPI } from '../utils/api';
@@ -30,6 +31,15 @@ const CourseView = () => {
   const [course, setCourse] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+
+  // Stronger contrast colors for dark mode
+  const bgColor = useColorModeValue('gray.50', '#1A202C');
+  const cardBg = useColorModeValue('white', '#2D3748');
+  const textColor = useColorModeValue('gray.900', 'white');
+  const subTextColor = useColorModeValue('gray.700', 'gray.300');
+  const borderColor = useColorModeValue('gray.200', 'gray.600');
+  const hoverBg = useColorModeValue('blue.50', '#2B6CB0');
+  const activeBg = useColorModeValue('blue.100', '#2C5282');
 
   useEffect(() => {
     fetchCourse();
@@ -55,14 +65,14 @@ const CourseView = () => {
   if (loading) {
     return (
       <Flex justify="center" align="center" minH="400px">
-        <Spinner size="xl" color="blue.500" />
+        <Spinner size="xl" color="blue.400" />
       </Flex>
     );
   }
 
   if (error || !course) {
     return (
-      <Alert status="error">
+      <Alert status="error" bg={useColorModeValue('red.50', '#742A2A')} color={textColor}>
         <AlertIcon />
         {error || 'Course not found'}
       </Alert>
@@ -70,7 +80,7 @@ const CourseView = () => {
   }
 
   return (
-    <Box maxW="1000px" mx="auto">
+    <Box maxW="1000px" mx="auto" bg={bgColor} p={4} borderRadius="md">
       <VStack spacing={6} align="stretch">
         {/* Back Button */}
         <Button
@@ -78,21 +88,33 @@ const CourseView = () => {
           variant="ghost"
           onClick={() => navigate('/my-courses')}
           alignSelf="flex-start"
+          color={textColor}
+          _hover={{ bg: hoverBg }}
         >
           Back to Courses
         </Button>
 
         {/* Course Header */}
-        <Box>
-          <Heading size="2xl" mb={3} color="gray.900" fontWeight="bold">{course.title}</Heading>
-          <Text fontSize="lg" color="gray.700" mb={4} fontWeight="500">
+        <Box bg={cardBg} p={5} borderRadius="md" boxShadow="md">
+          <Heading size="2xl" mb={3} color={textColor} fontWeight="bold">
+            {course.title}
+          </Heading>
+          <Text fontSize="lg" color={subTextColor} mb={4} fontWeight="500">
             {course.description}
           </Text>
           
           {/* Tags */}
           <HStack spacing={2} flexWrap="wrap">
             {course.tags?.map((tag, index) => (
-              <Badge key={index} colorScheme="blue" fontSize="sm" px={3} py={1}>
+              <Badge
+                key={index}
+                colorScheme="blue"
+                fontSize="sm"
+                px={3}
+                py={1}
+                bg={useColorModeValue('blue.100', '#2A4365')}
+                color={useColorModeValue('blue.800', 'white')}
+              >
                 {tag}
               </Badge>
             ))}
@@ -100,39 +122,47 @@ const CourseView = () => {
         </Box>
 
         {/* Course Stats */}
-        <HStack spacing={8} p={4} bg="gray.50" borderRadius="md">
+        <HStack spacing={8} p={4} bg={cardBg} borderRadius="md" boxShadow="sm">
           <HStack>
-            <FiBook color="gray.900" />
-            <Text fontWeight="semibold" color="gray.900">
+            <FiBook color={useColorModeValue('black', 'white')} />
+            <Text fontWeight="semibold" color={textColor}>
               {course.modules?.length || 0} Modules
             </Text>
           </HStack>
           <HStack>
-            <FiCheckCircle color="gray.900" />
-            <Text fontWeight="semibold" color="gray.900">
+            <FiCheckCircle color={useColorModeValue('black', 'white')} />
+            <Text fontWeight="semibold" color={textColor}>
               {course.modules?.reduce((acc, mod) => acc + (mod.lessons?.length || 0), 0) || 0} Lessons
             </Text>
           </HStack>
         </HStack>
 
         {/* Modules & Lessons */}
-        <Box>
-          <Heading size="lg" mb={4} color="gray.800" fontWeight="bold">Course Content</Heading>
+        <Box bg={cardBg} p={4} borderRadius="md" boxShadow="md">
+          <Heading size="lg" mb={4} color={textColor} fontWeight="bold">
+            Course Content
+          </Heading>
           
           <Accordion allowMultiple defaultIndex={[0]}>
             {course.modules?.map((module, moduleIndex) => (
-              <AccordionItem key={module.id} border="1px" borderColor="gray.200" borderRadius="md" mb={3}>
+              <AccordionItem
+                key={module.id}
+                border="1px"
+                borderColor={borderColor}
+                borderRadius="md"
+                mb={3}
+              >
                 <h2>
-                  <AccordionButton _expanded={{ bg: 'blue.50', borderBottomWidth: '1px' }}>
+                  <AccordionButton _expanded={{ bg: hoverBg, borderBottomWidth: '1px' }}>
                     <Box flex="1" textAlign="left">
-                      <Text fontWeight="bold" fontSize="lg" color="gray.900">
+                      <Text fontWeight="bold" fontSize="lg" color={textColor}>
                         Module {moduleIndex + 1}: {module.title}
                       </Text>
-                      <Text fontSize="sm" color="gray.700" fontWeight="500">
+                      <Text fontSize="sm" color={subTextColor} fontWeight="500">
                         {module.lessons?.length || 0} lessons
                       </Text>
                     </Box>
-                    <AccordionIcon color="gray.700" />
+                    <AccordionIcon color={subTextColor} />
                   </AccordionButton>
                 </h2>
                 <AccordionPanel pb={4}>
@@ -143,14 +173,20 @@ const CourseView = () => {
                         variant="ghost"
                         justifyContent="flex-start"
                         onClick={() => handleLessonClick(moduleIndex, lessonIndex)}
-                        rightIcon={lesson.is_enriched ? <FiCheckCircle color="green" /> : null}
-                        _hover={{ bg: 'blue.50' }}
-                        color="black"
+                        rightIcon={
+                          lesson.is_enriched ? <FiCheckCircle color="green" /> : null
+                        }
+                        _hover={{ bg: hoverBg }}
+                        _active={{ bg: activeBg }}
+                        color={textColor}
                         fontWeight="500"
-                        textColor="black"
-                        _active={{ bg: 'blue.100' }}
                       >
-                        <Text textAlign="left" color="black" fontSize="md" fontWeight="500">
+                        <Text
+                          textAlign="left"
+                          color={textColor}
+                          fontSize="md"
+                          fontWeight="500"
+                        >
                           {lessonIndex + 1}. {lesson.title}
                         </Text>
                       </Button>
