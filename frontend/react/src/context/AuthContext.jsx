@@ -1,5 +1,8 @@
 import { createContext, useState, useContext, useEffect } from 'react';
 
+// ✅ Define API base URL using environment variable (fallback to localhost for dev)
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000/api/';
+
 const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
@@ -8,11 +11,10 @@ export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(localStorage.getItem('auth_token'));
   const [loading, setLoading] = useState(true);
 
+  // Check stored token/user on mount
   useEffect(() => {
-    // Check if user is authenticated on mount
     const storedToken = localStorage.getItem('auth_token');
     const storedUser = localStorage.getItem('auth_user');
-    
     if (storedToken && storedUser) {
       setToken(storedToken);
       setUser(JSON.parse(storedUser));
@@ -21,13 +23,12 @@ export const AuthProvider = ({ children }) => {
     setLoading(false);
   }, []);
 
+  // 🔑 Login function
   const login = async (username, password) => {
     try {
-      const response = await fetch(`${API_BASE_URL}login/`,{
+      const response = await fetch(`${API_BASE_URL}login/`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password }),
       });
 
@@ -43,18 +44,17 @@ export const AuthProvider = ({ children }) => {
       } else {
         return { success: false, error: data.error || 'Login failed' };
       }
-    } catch (error) {
+    } catch {
       return { success: false, error: 'Network error. Please try again.' };
     }
   };
 
+  // 📝 Register function
   const register = async (username, password, email) => {
     try {
       const response = await fetch(`${API_BASE_URL}register/`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password, email }),
       });
 
@@ -70,11 +70,12 @@ export const AuthProvider = ({ children }) => {
       } else {
         return { success: false, error: data.error || 'Registration failed' };
       }
-    } catch (error) {
+    } catch {
       return { success: false, error: 'Network error. Please try again.' };
     }
   };
 
+  // 🚪 Logout function
   const logout = () => {
     localStorage.removeItem('auth_token');
     localStorage.removeItem('auth_user');
