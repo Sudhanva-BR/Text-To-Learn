@@ -23,7 +23,7 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (username, password) => {
     try {
-      const response = await fetch('http://127.0.0.1:8000/api/login/', {
+      const response = await fetch(`${API_BASE_URL}login/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -50,7 +50,7 @@ export const AuthProvider = ({ children }) => {
 
   const register = async (username, password, email) => {
     try {
-      const response = await fetch('http://127.0.0.1:8000/api/register/', {
+      const response = await fetch(`${API_BASE_URL}register/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
