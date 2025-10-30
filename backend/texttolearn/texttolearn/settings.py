@@ -117,13 +117,15 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # CORS settings
 # -----------------------------------
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173",
-    "http://localhost:5174",
-    "http://localhost:3000",
-    "https://text-to-learn-git-main-sudhanvas-projects-1849a300.vercel.app",  # replace later
+    "https://text-to-learn-git-main-sudhanvas-projects-1849a300.vercel.app",  # your Vercel frontend
+    "https://text-to-learn.vercel.app",  # in case Vercel gives custom domain
+    "http://localhost:5173",  # for local testing
+    "http://localhost:3000",  # for local testing
 ]
-CORS_ALLOW_ALL_ORIGINS = config("CORS_ALLOW_ALL_ORIGINS", default=True, cast=bool)
+
+CORS_ALLOW_ALL_ORIGINS = False
 CORS_ALLOW_CREDENTIALS = True
+
 
 CORS_ALLOW_HEADERS = [
     "accept",
