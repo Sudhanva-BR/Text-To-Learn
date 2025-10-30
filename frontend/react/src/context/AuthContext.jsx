@@ -3,6 +3,8 @@ import { createContext, useState, useContext, useEffect } from 'react';
 // ✅ Define API base URL using environment variable (fallback to localhost for dev)
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000/api/';
 
+console.log("🔗 API Base URL:", API_BASE_URL); // Helps debug env variable in build
+
 const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
@@ -11,15 +13,17 @@ export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(localStorage.getItem('auth_token'));
   const [loading, setLoading] = useState(true);
 
-  // Check stored token/user on mount
+  // ✅ Check stored token/user on mount
   useEffect(() => {
     const storedToken = localStorage.getItem('auth_token');
     const storedUser = localStorage.getItem('auth_user');
+
     if (storedToken && storedUser) {
       setToken(storedToken);
       setUser(JSON.parse(storedUser));
       setIsAuthenticated(true);
     }
+
     setLoading(false);
   }, []);
 
@@ -42,9 +46,11 @@ export const AuthProvider = ({ children }) => {
         localStorage.setItem('auth_user', JSON.stringify(data.user));
         return { success: true };
       } else {
+        console.error("❌ Login error:", data);
         return { success: false, error: data.error || 'Login failed' };
       }
-    } catch {
+    } catch (error) {
+      console.error("🚨 Network error:", error);
       return { success: false, error: 'Network error. Please try again.' };
     }
   };
@@ -68,9 +74,11 @@ export const AuthProvider = ({ children }) => {
         localStorage.setItem('auth_user', JSON.stringify(data.user));
         return { success: true };
       } else {
+        console.error("❌ Register error:", data);
         return { success: false, error: data.error || 'Registration failed' };
       }
-    } catch {
+    } catch (error) {
+      console.error("🚨 Network error:", error);
       return { success: false, error: 'Network error. Please try again.' };
     }
   };
@@ -86,7 +94,15 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ isAuthenticated, user, token, loading, login, register, logout }}
+      value={{
+        isAuthenticated,
+        user,
+        token,
+        loading,
+        login,
+        register,
+        logout,
+      }}
     >
       {children}
     </AuthContext.Provider>
