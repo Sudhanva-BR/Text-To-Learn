@@ -120,7 +120,7 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "http://localhost:5174",
     "http://localhost:3000",
-    "https://your-frontend-name.onrender.com",  # replace later
+    "https://text-to-learn-git-main-sudhanvas-projects-1849a300.vercel.app",  # replace later
 ]
 CORS_ALLOW_ALL_ORIGINS = config("CORS_ALLOW_ALL_ORIGINS", default=True, cast=bool)
 CORS_ALLOW_CREDENTIALS = True
