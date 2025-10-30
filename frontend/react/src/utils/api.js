@@ -1,12 +1,16 @@
 import axios from 'axios';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://text-to-learn-klnl.onrender.com';
+// Read from environment variable, fallback to Render URL
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://text-to-learn-klnl.onrender.com/api';
+
+console.log('🔗 API Base URL:', API_BASE_URL); // Debug log
 
 const api = axios.create({
-  baseURL: `${API_BASE_URL}/api`,
+  baseURL: API_BASE_URL,  // Already includes /api, don't add it again
   headers: {
     'Content-Type': 'application/json',
   },
+  timeout: 60000, // 60 second timeout for Render cold starts
 });
 
 // Add auth token to requests
@@ -19,6 +23,17 @@ api.interceptors.request.use(
     return config;
   },
   (error) => Promise.reject(error)
+);
+
+// Add response interceptor for better error handling
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.code === 'ECONNABORTED') {
+      console.error('Request timeout - Render backend may be waking up');
+    }
+    return Promise.reject(error);
+  }
 );
 
 // API methods

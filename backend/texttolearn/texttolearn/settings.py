@@ -19,9 +19,14 @@ load_dotenv(os.path.join(BASE_DIR, '..', '.env'))  # ensures backend/.env is rea
 # Security
 # -----------------------------------
 SECRET_KEY = config('SECRET_KEY', default='django-insecure-change-this-in-production')
-DEBUG = config('DEBUG', default=True, cast=bool)
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'testserver', '.onrender.com']
-
+DEBUG = config('DEBUG', default=False, cast=bool)  # Change default to False
+ALLOWED_HOSTS = [
+    'localhost', 
+    '127.0.0.1', 
+    'testserver', 
+    '.onrender.com',
+    'text-to-learn-klnl.onrender.com',  # Add your specific domain
+]
 # -----------------------------------
 # Installed apps
 # -----------------------------------
