@@ -34,9 +34,7 @@ const AppRoutes = () => {
 function App() {
   return (
     <Router>
-      <AuthProvider>
         <AppRoutes />
-      </AuthProvider>
     </Router>
   );
 }
