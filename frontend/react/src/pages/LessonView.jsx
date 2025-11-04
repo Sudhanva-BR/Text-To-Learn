@@ -97,52 +97,63 @@ const LessonView = () => {
     }
   };
 
-  const handleGenerateHinglishAudio = async () => {
-    if (!lesson) return;
-    
-    try {
-      setLoadingAudio(true);
-      const token = localStorage.getItem('auth_token');
-      const response = await fetch(`http://127.0.0.1:8000/api/lessons/${lesson.id}/hinglish-audio/`, {
+const handleGenerateHinglishAudio = async () => {
+  if (!lesson) return;
+
+  try {
+    setLoadingAudio(true);
+
+    const token = localStorage.getItem('auth_token');
+
+    // ✅ Use environment variable or fallback to Render backend
+    const BASE_URL =
+      import.meta.env.VITE_API_URL?.replace(/\/$/, '') ||
+      'https://text-to-learn-klnl.onrender.com/api';
+
+    const response = await fetch(
+      `${BASE_URL}/lessons/${lesson.id}/hinglish-audio/`,
+      {
         headers: {
           'Authorization': `Token ${token}`,
           'Content-Type': 'application/json',
         },
-      });
-      
-      const data = await response.json();
-      
-      if (response.ok) {
-        setHinglishAudio(data);
-        toast({
-          title: 'Hinglish Audio Generated!',
-          description: 'Hinglish translation is ready. Use browser TTS to listen.',
-          status: 'success',
-          duration: 3000,
-          isClosable: true,
-        });
-      } else {
-        toast({
-          title: 'Generation Failed',
-          description: data.error || 'Failed to generate Hinglish audio.',
-          status: 'error',
-          duration: 5000,
-          isClosable: true,
-        });
       }
-    } catch (err) {
-      console.error('Error generating Hinglish audio:', err);
+    );
+
+    const data = await response.json();
+
+    if (response.ok) {
+      setHinglishAudio(data);
       toast({
-        title: 'Network Error',
-        description: 'Failed to connect to server.',
+        title: 'Hinglish Audio Generated!',
+        description: 'Hinglish translation is ready. Use browser TTS to listen.',
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+      });
+    } else {
+      toast({
+        title: 'Generation Failed',
+        description: data.error || 'Failed to generate Hinglish audio.',
         status: 'error',
         duration: 5000,
         isClosable: true,
       });
-    } finally {
-      setLoadingAudio(false);
     }
-  };
+  } catch (err) {
+    console.error('Error generating Hinglish audio:', err);
+    toast({
+      title: 'Network Error',
+      description: 'Failed to connect to server.',
+      status: 'error',
+      duration: 5000,
+      isClosable: true,
+    });
+  } finally {
+    setLoadingAudio(false);
+  }
+};
+
 
   const speakText = (text) => {
     if ('speechSynthesis' in window) {
